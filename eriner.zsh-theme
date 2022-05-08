@@ -97,5 +97,17 @@ if (( ${+functions[git-info]} )); then
   autoload -Uz add-zsh-hook && add-zsh-hook precmd git-info
 fi
 
-PS1='$(_prompt_eriner_main)'
+# my hack to add duration, copied from ascii
+autoload -Uz add-zsh-hook
+# Depends on duration-info module to show last command duration
+if (( ${+functions[duration-info-preexec]} && \
+    ${+functions[duration-info-precmd]} )); then
+  zstyle ':zim:duration-info' format ' took %B%F{yellow}%d%f%b'
+  add-zsh-hook preexec duration-info-preexec
+  add-zsh-hook precmd duration-info-precmd
+fi
+
+
+PS1='${duration_info} $(_prompt_eriner_main)'
 unset RPS1
+
